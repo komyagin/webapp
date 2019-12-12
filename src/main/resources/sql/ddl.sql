@@ -1,3 +1,5 @@
+create database notices;
+
 create schema if not exists lab;
 
 create table if not exists lab.person
@@ -21,4 +23,3 @@ create table if not exists lab.notice
     category     text,
     foreign key (person_id) references lab.person (id)
 );
-
