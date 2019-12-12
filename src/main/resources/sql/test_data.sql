@@ -1,3 +1,5 @@
+SET SCHEMA 'lab';
+
 INSERT INTO lab.person (id, first_name, last_name, email, category)
 VALUES (1, 'Semyon', 'Komyagin', 'komyagin.s@gmail.com', 'computers'),
        (2, 'Maxim', 'Shubin', 'shubin.m@gmail.com', 'mobiles'),
