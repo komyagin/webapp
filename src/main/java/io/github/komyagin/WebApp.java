@@ -1,37 +1,17 @@
 package io.github.komyagin;
 
+import io.github.komyagin.util.DbConnection;
+
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 public class WebApp {
 
-    private final String url = "jdbc:postgresql://localhost/postgres";
-    private final String user = "postgres";
-    private final String password = "qaz1@Wsx";
-
-    /**
-     * Connect to the PostgreSQL database
-     *
-     * @return a Connection object
-     */
-    public Connection connect() {
-        Connection conn = null;
-        try {
-            conn = DriverManager.getConnection(url, user, password);
-            System.out.println("Connected to the PostgreSQL server successfully.");
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-
-        return conn;
-    }
 
     public static void main(String[] args) {
-        WebApp webApp = new WebApp();
-        Connection conn = webApp.connect();
+        Connection conn = DbConnection.getConnection();
 
         if(conn != null) {
             try {
@@ -45,6 +25,11 @@ public class WebApp {
                     System.out.print(rs.getString(4) + " ");
                     System.out.print(rs.getString(5) + " ");
                 }
+
+                // TEST insert from code - SUCCESS!
+                //String sql = "INSERT INTO lab.person VALUES (5, 'Vitaliy', 'Milonov', 'milonov.v@gmail.com', 'mobiles')";
+                //st.executeQuery(sql);
+
                 rs.close();
                 st.close();
             } catch (SQLException e) {
