@@ -2,10 +2,12 @@ package io.github.komyagin.dao;
 
 import io.github.komyagin.model.Notice;
 
+import java.util.List;
+
 public class NoticeSqlRepository implements NoticeRepository {
     @Override
-    public void addNotice(Notice note) {
-
+    public Notice addNotice(Notice note) {
+        return null;
     }
 
     @Override
@@ -14,18 +16,18 @@ public class NoticeSqlRepository implements NoticeRepository {
     }
 
     @Override
-    public void updateNotice(int id, Notice notice) {
-
+    public Notice updateNotice(int id, Notice notice) {
+        return null;
     }
 
     @Override
-    public void removeNotice(int id) {
-
+    public Notice removeNotice(int id) {
+        return null;
     }
 
     @Override
-    public void showAll() {
-
+    public List<Notice> showAll() {
+        return null;
     }
 
     @Override

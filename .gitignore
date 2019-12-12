@@ -1,2 +1,7 @@
 /.idea/
 /*.iml
+/target/
+/*.jar
+/*.class
+/*.zip
+/*.war
