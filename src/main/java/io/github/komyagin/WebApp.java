@@ -1,55 +1,62 @@
 package io.github.komyagin;
 
+import io.github.komyagin.util.ConnectionFactory;
+
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class WebApp {
 
-    private final String url = "jdbc:postgresql://localhost/postgres";
-    private final String user = "postgres";
-    private final String password = "qaz1@Wsx";
 
-    /**
-     * Connect to the PostgreSQL database
-     *
-     * @return a Connection object
-     */
-    public Connection connect() {
-        Connection conn = null;
-        try {
-            conn = DriverManager.getConnection(url, user, password);
-            System.out.println("Connected to the PostgreSQL server successfully.");
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
-        }
-
-        return conn;
-    }
 
     public static void main(String[] args) {
-        WebApp webApp = new WebApp();
-        Connection conn = webApp.connect();
+        Logger logger = Logger.getLogger(WebApp.class.getName());
 
-        if(conn != null) {
+        Connection connection = ConnectionFactory.getConnection();
+
+        Statement statement = null;
+        ResultSet resultSet = null;
+
+        if(connection != null) {
             try {
-                Statement st = conn.createStatement();
-                ResultSet rs = st.executeQuery("SELECT * FROM lab.person");
-                while (rs.next()) {
-                    System.out.println("Persons: ");
-                    System.out.print(rs.getInt(1) + " ");
-                    System.out.print(rs.getString(2) + " ");
-                    System.out.print(rs.getString(3) + " ");
-                    System.out.print(rs.getString(4) + " ");
-                    System.out.print(rs.getString(5) + " ");
+                statement = connection.createStatement();
+                try {
+                    resultSet = statement.executeQuery("SELECT * FROM lab.person");
+                    while (resultSet.next()) {
+                        System.out.println("Persons: ");
+                        System.out.print(resultSet.getInt(1) + " ");
+                        System.out.print(resultSet.getString(2) + " ");
+                        System.out.print(resultSet.getString(3) + " ");
+                        System.out.print(resultSet.getString(4) + " ");
+                        System.out.print(resultSet.getString(5) + " ");
+                    }
+                    String sql = null;
+
+                    statement.executeQuery(sql);
+
+                } catch (SQLException e) {
+                    logger.log(Level.WARNING, "Query error...");
+                } finally {
+                    try {
+                        if (resultSet != null) {
+                            resultSet.close();
+                        }
+                        statement.close();
+                    } catch (SQLException e) {
+                        logger.log(Level.WARNING, "Cannot close connection...");
+                    } catch (NullPointerException e) {
+                        e.getStackTrace();
+                    }
                 }
-                rs.close();
-                st.close();
+
             } catch (SQLException e) {
-                System.out.println("SQL error!");
+                logger.log(Level.WARNING, "SQL error!");
             }
+
         }
 
     }
