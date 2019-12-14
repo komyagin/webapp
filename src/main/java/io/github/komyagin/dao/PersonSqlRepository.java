@@ -1,12 +1,20 @@
 package io.github.komyagin.dao;
 
+import io.github.komyagin.WebApp;
+import io.github.komyagin.model.Category;
 import io.github.komyagin.model.Person;
 import io.github.komyagin.util.ConnectionFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.logging.Level;
 
 public class PersonSqlRepository implements PersonRepository {
     @Override
@@ -19,16 +27,15 @@ public class PersonSqlRepository implements PersonRepository {
             preparedStatement = connection.prepareStatement("SET SCHEMA 'lab'");
             preparedStatement.addBatch();
             preparedStatement = connection.prepareStatement(sql);
-            System.out.println(person);
             preparedStatement.setString(1, person.getFirstName());
             preparedStatement.setString(2, person.getLastName());
             preparedStatement.setString(3, person.getEmail());
             preparedStatement.setString(4, "default");
             preparedStatement.execute();
             preparedStatement.close();
-            System.out.println("SQL Insert success?!");
+            WebApp.logger.log(Level.FINE, "SQL Insert success...");
         } catch (SQLException e) {
-            System.out.println("SQL Exception Person rep");
+            WebApp.logger.log(Level.WARNING, "SQL Exception Person rep");
         } finally {
             try {
                 connection.close();
@@ -55,7 +62,46 @@ public class PersonSqlRepository implements PersonRepository {
 
     @Override
     public List<Person> getAllPersons() {
-        return null;
+        List<Person> list = new ArrayList<>();
+
+        Connection connection = ConnectionFactory.getConnection();
+
+        Statement statement = null;
+        ResultSet resultSet = null;
+
+        if(connection != null) {
+            try {
+                statement = connection.createStatement();
+                try {
+                    resultSet = statement.executeQuery("SELECT * FROM lab.person");
+                    while (resultSet.next()) {
+
+                        Person person = new Person(resultSet.getInt(1),
+                                resultSet.getString(2), resultSet.getString(3),
+                                resultSet.getString(4), Category.COMPUTERS);
+                        list.add(person);
+                    }
+                } catch (SQLException e) {
+                    WebApp.logger.log(Level.WARNING, "Query error...");
+                } finally {
+                    try {
+                        if (resultSet != null) {
+                            resultSet.close();
+                        }
+                        statement.close();
+                    } catch (SQLException e) {
+                        WebApp.logger.log(Level.WARNING, "Cannot close connection...");
+                    } catch (NullPointerException e) {
+                        e.getStackTrace();
+                    }
+                }
+
+            } catch (SQLException e) {
+                WebApp.logger.log(Level.WARNING, "SQL error!");
+            }
+
+        }
+        return list;
     }
 
     @Override

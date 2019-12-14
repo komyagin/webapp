@@ -7,8 +7,13 @@ import io.github.komyagin.model.Person;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.logging.Level;
 
 public class PersonFactory {
+
+    private PersonFactory() {
+
+    }
 
     static BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
 
@@ -27,13 +32,13 @@ public class PersonFactory {
             email = bufferedReader.readLine();
             System.out.println();
         } catch (IOException e) {
-            System.out.println("IOException...");
+            WebApp.logger.log(Level.WARNING, "IOException...");
         }
         if(firstName != null && lastName != null && email != null) {
-            System.out.println("Person created successful");
+            WebApp.logger.log(Level.FINE, "Person created successful");
             return new Person(firstName, lastName, email);
         }
-        System.out.println("Person not created!");
+        WebApp.logger.log(Level.WARNING, "Person not created!");
         return null;
     }
 

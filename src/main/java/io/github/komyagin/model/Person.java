@@ -2,7 +2,7 @@ package io.github.komyagin.model;
 
 public class Person {
 
-    private static int id = 0;
+    private int id;
     private String firstName;
     private String lastName;
     private String email;
@@ -12,8 +12,15 @@ public class Person {
 
     }
 
+    public Person(int id, String firstName, String lastName, String email, Category category) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.category = category;
+    }
+
     public Person(String firstName, String lastName, String email) {
-        id++;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;

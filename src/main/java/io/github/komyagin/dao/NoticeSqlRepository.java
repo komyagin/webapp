@@ -9,9 +9,7 @@ import java.util.List;
 
 public class NoticeSqlRepository implements NoticeRepository {
     @Override
-    public void addNotice(Notice note) {
-
-
+    public void addNotice(Notice notice) {
 
     }
 
