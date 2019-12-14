@@ -1,5 +1,9 @@
 package io.github.komyagin;
 
+import io.github.komyagin.dao.PersonSqlRepository;
+import io.github.komyagin.model.Category;
+import io.github.komyagin.model.Person;
+import io.github.komyagin.service.PersonFactory;
 import io.github.komyagin.util.ConnectionFactory;
 
 import java.sql.Connection;
@@ -11,8 +15,6 @@ import java.util.logging.Logger;
 
 public class WebApp {
 
-
-
     public static void main(String[] args) {
         Logger logger = Logger.getLogger(WebApp.class.getName());
 
@@ -20,6 +22,10 @@ public class WebApp {
 
         Statement statement = null;
         ResultSet resultSet = null;
+
+        PersonSqlRepository personSqlRepository = new PersonSqlRepository();
+
+        personSqlRepository.addPerson(new Person("Max", "Pain", "max.pain@ya.ru"));
 
         if(connection != null) {
             try {
@@ -34,9 +40,7 @@ public class WebApp {
                         System.out.print(resultSet.getString(4) + " ");
                         System.out.print(resultSet.getString(5) + " ");
                     }
-                    String sql = null;
 
-                    statement.executeQuery(sql);
 
                 } catch (SQLException e) {
                     logger.log(Level.WARNING, "Query error...");

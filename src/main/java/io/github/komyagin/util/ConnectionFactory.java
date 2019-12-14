@@ -24,7 +24,7 @@ public class ConnectionFactory {
         Connection connection = null;
         try {
             connection = DriverManager.getConnection(URL, USER, PASSWORD);
-            logger.warning("Connected to the PostgreSQL server successfully.");
+            logger.log(Level.FINE,"Connected to the PostgreSQL server successfully.");
         } catch (SQLException e) {
             logger.log(Level.WARNING, "ERROR!");
         }

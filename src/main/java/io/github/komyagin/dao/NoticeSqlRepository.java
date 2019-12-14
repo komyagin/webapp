@@ -1,13 +1,18 @@
 package io.github.komyagin.dao;
 
 import io.github.komyagin.model.Notice;
+import io.github.komyagin.util.ConnectionFactory;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.util.List;
 
 public class NoticeSqlRepository implements NoticeRepository {
     @Override
-    public Notice addNotice(Notice note) {
-        return null;
+    public void addNotice(Notice note) {
+
+
+
     }
 
     @Override
@@ -16,7 +21,7 @@ public class NoticeSqlRepository implements NoticeRepository {
     }
 
     @Override
-    public Notice updateNotice(int id, Notice notice) {
+    public Notice updateNotice(Notice notice) {
         return null;
     }
 

@@ -5,7 +5,7 @@ import io.github.komyagin.model.Notice;
 import java.util.List;
 
 public interface NoticeRepository {
-    Notice addNotice(Notice note);
+    void addNotice(Notice note);
     Notice readNotice(int id);
     Notice updateNotice(Notice notice);
     Notice removeNotice(int id);
