@@ -20,10 +20,8 @@ public class Person {
         this.category = category;
     }
 
-    public Person(String firstName, String lastName, String email) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
+    public int getId() {
+        return id;
     }
 
     public String getFirstName() {
@@ -59,6 +57,12 @@ public class Person {
     }
 
     public String toString() {
-        return getFirstName() + " " + getLastName() + " " + getEmail();
+        return "Person{" +
+                "id='" + id + '\'' +
+                ", first_name='" + firstName + '\'' +
+                ", last_name='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", category='" + category + '\'' +
+                '}';
     }
 }

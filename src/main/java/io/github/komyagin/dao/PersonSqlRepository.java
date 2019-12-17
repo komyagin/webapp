@@ -30,7 +30,7 @@ public class PersonSqlRepository implements PersonRepository {
             preparedStatement.setString(1, person.getFirstName());
             preparedStatement.setString(2, person.getLastName());
             preparedStatement.setString(3, person.getEmail());
-            preparedStatement.setString(4, "default");
+            preparedStatement.setString(4, person.getCategory().toString());
             preparedStatement.execute();
             preparedStatement.close();
             WebApp.logger.log(Level.FINE, "SQL Insert success...");
@@ -75,10 +75,11 @@ public class PersonSqlRepository implements PersonRepository {
                 try {
                     resultSet = statement.executeQuery("SELECT * FROM lab.person");
                     while (resultSet.next()) {
-
+                        //TODO: Transfer to particular class Convert with static method statementToPerson
+                        Category category = Category.valueOf(resultSet.getString(5).toLowerCase());
                         Person person = new Person(resultSet.getInt(1),
                                 resultSet.getString(2), resultSet.getString(3),
-                                resultSet.getString(4), Category.COMPUTERS);
+                                resultSet.getString(4), category);
                         list.add(person);
                     }
                 } catch (SQLException e) {

@@ -23,12 +23,14 @@ public class ConnectionFactory {
      */
     public static Connection getConnection() {
 
+
         Connection connection = null;
         try {
+            Class.forName("org.postgresql.Driver");
             connection = DriverManager.getConnection(URL, USER, PASSWORD);
             WebApp.logger.log(Level.FINE,"Connected to the PostgreSQL server successfully.");
-        } catch (SQLException e) {
-            WebApp.logger.log(Level.WARNING, "ERROR!");
+        } catch (SQLException | ClassNotFoundException e) {
+            System.out.println(e);
         }
         return connection;
     }

@@ -32,11 +32,11 @@ public class PersonFactory {
             email = bufferedReader.readLine();
             System.out.println();
         } catch (IOException e) {
-            WebApp.logger.log(Level.WARNING, "IOException...");
+            WebApp.logger.log(Level.SEVERE, "IOException...");
         }
         if(firstName != null && lastName != null && email != null) {
             WebApp.logger.log(Level.FINE, "Person created successful");
-            return new Person(firstName, lastName, email);
+            return new Person(1, firstName, lastName, email, Category.COMPUTERS);
         }
         WebApp.logger.log(Level.WARNING, "Person not created!");
         return null;
