@@ -1,9 +1,10 @@
 SET SCHEMA 'lab';
 
 INSERT INTO lab.person (id, first_name, last_name, email, category)
-VALUES (1, 'Semyon', 'Komyagin', 'komyagin.s@gmail.com', 'computers'),
-       (2, 'Maxim', 'Shubin', 'shubin.m@gmail.com', 'mobiles'),
-       (3, 'Vitaliy', 'Voloshin', 'voloshin.v@gmail.com', 'housing');
+VALUES (1, 'Semyon', 'Komyagin', 'komyagin.s@gmail.com', 'INDIVIDUAL'),
+       (2, 'Maxim', 'Shubin', 'shubin.m@gmail.com', 'COMPANY'),
+       (3, 'Max', 'Pain', 'pain.m@gmail.com', 'COMPANY'),
+       (4, 'Vitaliy', 'Voloshin', 'voloshin.v@gmail.com', 'company');
 
 INSERT INTO lab.notice (person_id, header, body, tel_number, created_date, updated_date, category)
 VALUES (1, 'New computer for sale', 'New computer for sale', '+79111720124', current_timestamp, current_timestamp, 'computers'),

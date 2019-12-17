@@ -24,8 +24,6 @@ public class PersonSqlRepository implements PersonRepository {
 
         try {
             String sql = "INSERT INTO lab.person (first_name, last_name, email, category) VALUES (?, ?, ?, ?)";
-            preparedStatement = connection.prepareStatement("SET SCHEMA 'lab'");
-            preparedStatement.addBatch();
             preparedStatement = connection.prepareStatement(sql);
             preparedStatement.setString(1, person.getFirstName());
             preparedStatement.setString(2, person.getLastName());
@@ -76,7 +74,7 @@ public class PersonSqlRepository implements PersonRepository {
                     resultSet = statement.executeQuery("SELECT * FROM lab.person");
                     while (resultSet.next()) {
                         //TODO: Transfer to particular class Convert with static method statementToPerson
-                        Category category = Category.valueOf(resultSet.getString(5).toLowerCase());
+                        Category category = Category.valueOf((resultSet.getString(5)).toUpperCase());
                         Person person = new Person(resultSet.getInt(1),
                                 resultSet.getString(2), resultSet.getString(3),
                                 resultSet.getString(4), category);

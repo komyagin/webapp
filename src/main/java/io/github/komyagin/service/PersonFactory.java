@@ -22,7 +22,7 @@ public class PersonFactory {
         String firstName = null;
         String lastName = null;
         String email = null;
-        Category category = null;
+        String category = null;
         try {
             System.out.print("Enter first name: ");
             firstName = bufferedReader.readLine();
@@ -30,13 +30,15 @@ public class PersonFactory {
             lastName = bufferedReader.readLine();
             System.out.print("Enter email: ");
             email = bufferedReader.readLine();
+            System.out.print("Enter email: ");
+            category = bufferedReader.readLine();
             System.out.println();
         } catch (IOException e) {
             WebApp.logger.log(Level.SEVERE, "IOException...");
         }
         if(firstName != null && lastName != null && email != null) {
             WebApp.logger.log(Level.FINE, "Person created successful");
-            return new Person(1, firstName, lastName, email, Category.COMPUTERS);
+            return new Person(1, firstName, lastName, email, Category.valueOf(category));
         }
         WebApp.logger.log(Level.WARNING, "Person not created!");
         return null;

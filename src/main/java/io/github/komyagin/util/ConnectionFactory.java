@@ -12,7 +12,7 @@ public class ConnectionFactory {
 
     private ConnectionFactory() {}
 
-    private static final String URL = "jdbc:postgresql://localhost/postgres";
+    private static final String URL = "jdbc:postgresql://localhost/postgres?currentSchema=lab";
     private static final String USER = "postgres";
     private static final String PASSWORD = "qaz1@Wsx";
 
