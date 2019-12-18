@@ -1,19 +1,22 @@
 package io.github.komyagin.service;
 
-import io.github.komyagin.WebApp;
 import io.github.komyagin.model.Category;
 import io.github.komyagin.model.Person;
+import io.github.komyagin.util.ConnectionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.logging.Level;
 
 public class PersonFactory {
 
     private PersonFactory() {
 
     }
+
+    private static final Logger logger = LoggerFactory.getLogger(ConnectionFactory.class);
 
     static BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
 
@@ -34,13 +37,13 @@ public class PersonFactory {
             category = bufferedReader.readLine();
             System.out.println();
         } catch (IOException e) {
-            WebApp.logger.log(Level.SEVERE, "IOException...");
+            logger.error("IOException");
         }
         if(firstName != null && lastName != null && email != null) {
-            WebApp.logger.log(Level.FINE, "Person created successful");
+            logger.info("Person created successful");
             return new Person(1, firstName, lastName, email, Category.valueOf(category));
         }
-        WebApp.logger.log(Level.WARNING, "Person not created!");
+        logger.warn("Person not created!");
         return null;
     }
 

@@ -8,10 +8,6 @@ public class Person {
     private String email;
     private Category category;
 
-    public Person() {
-
-    }
-
     public Person(int id, String firstName, String lastName, String email, Category category) {
         this.id = id;
         this.firstName = firstName;

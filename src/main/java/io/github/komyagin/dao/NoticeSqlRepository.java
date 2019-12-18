@@ -1,10 +1,6 @@
 package io.github.komyagin.dao;
 
 import io.github.komyagin.model.Notice;
-import io.github.komyagin.util.ConnectionFactory;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.util.List;
 
 public class NoticeSqlRepository implements NoticeRepository {

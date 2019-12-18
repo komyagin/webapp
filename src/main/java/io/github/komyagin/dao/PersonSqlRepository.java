@@ -1,9 +1,10 @@
 package io.github.komyagin.dao;
 
-import io.github.komyagin.WebApp;
 import io.github.komyagin.model.Category;
 import io.github.komyagin.model.Person;
 import io.github.komyagin.util.ConnectionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,34 +12,41 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.logging.Level;
 
 public class PersonSqlRepository implements PersonRepository {
+
+    private static final Logger logger = LoggerFactory.getLogger(PersonSqlRepository.class);
+
+    private static final String PERSON_INSERT_SQL = "INSERT INTO lab.person (first_name, last_name, email, category) VALUES (?, ?, ?, ?)";
+
     @Override
     public void addPerson(Person person) {
         PreparedStatement preparedStatement = null;
         Connection connection = ConnectionFactory.getConnection();
 
         try {
-            String sql = "INSERT INTO lab.person (first_name, last_name, email, category) VALUES (?, ?, ?, ?)";
-            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement = connection.prepareStatement(PERSON_INSERT_SQL);
             preparedStatement.setString(1, person.getFirstName());
             preparedStatement.setString(2, person.getLastName());
             preparedStatement.setString(3, person.getEmail());
             preparedStatement.setString(4, person.getCategory().toString());
-            preparedStatement.execute();
-            preparedStatement.close();
-            WebApp.logger.log(Level.FINE, "SQL Insert success...");
+            if(preparedStatement.executeUpdate() == 1) {
+                logger.info("INSERT person to DB is succeed");
+            } else {
+                logger.warn("INSERT person to DB is not succeed");
+            }
+            logger.info("SQL Insert success...");
         } catch (SQLException e) {
-            WebApp.logger.log(Level.WARNING, "SQL Exception Person rep");
+            logger.warn("SQL Exception Person repository");
         } finally {
             try {
+                if(preparedStatement != null) {
+                    preparedStatement.close();
+                }
                 connection.close();
-            } catch (SQLException e) {
-
+            } catch (SQLException | NullPointerException e) {
+                logger.error(e.toString());
             }
         }
     }
@@ -81,7 +89,7 @@ public class PersonSqlRepository implements PersonRepository {
                         list.add(person);
                     }
                 } catch (SQLException e) {
-                    WebApp.logger.log(Level.WARNING, "Query error...");
+                    logger.warn("Query error...");
                 } finally {
                     try {
                         if (resultSet != null) {
@@ -89,14 +97,14 @@ public class PersonSqlRepository implements PersonRepository {
                         }
                         statement.close();
                     } catch (SQLException e) {
-                        WebApp.logger.log(Level.WARNING, "Cannot close connection...");
+                        logger.warn("Cannot close connection...");
                     } catch (NullPointerException e) {
-                        e.getStackTrace();
+                        logger.error(e.getMessage());
                     }
                 }
 
             } catch (SQLException e) {
-                WebApp.logger.log(Level.WARNING, "SQL error!");
+                logger.error(e.getMessage());
             }
 
         }

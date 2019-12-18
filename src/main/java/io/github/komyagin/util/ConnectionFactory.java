@@ -1,12 +1,11 @@
 package io.github.komyagin.util;
 
-import io.github.komyagin.WebApp;
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 public class ConnectionFactory {
 
@@ -15,6 +14,8 @@ public class ConnectionFactory {
     private static final String URL = "jdbc:postgresql://localhost/postgres?currentSchema=lab";
     private static final String USER = "postgres";
     private static final String PASSWORD = "qaz1@Wsx";
+
+    private static final Logger logger = LoggerFactory.getLogger(ConnectionFactory.class);
 
     /**
      * Connect to the PostgreSQL database
@@ -28,9 +29,9 @@ public class ConnectionFactory {
         try {
             Class.forName("org.postgresql.Driver");
             connection = DriverManager.getConnection(URL, USER, PASSWORD);
-            WebApp.logger.log(Level.FINE,"Connected to the PostgreSQL server successfully.");
+            logger.info("Connected to the PostgreSQL server successfully.");
         } catch (SQLException | ClassNotFoundException e) {
-            System.out.println(e);
+            logger.error("Cannot connect to DB...");
         }
         return connection;
     }
