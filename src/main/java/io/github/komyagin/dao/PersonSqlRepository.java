@@ -92,6 +92,7 @@ public class PersonSqlRepository implements PersonRepository {
         Connection connection = ConnectionFactory.getConnection();
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(PERSON_DELETE_SQL)) {
+            preparedStatement.setInt(1, id);
             preparedStatement.execute();
             logger.info("Person has been deleted successful");
         } catch (SQLException e) {

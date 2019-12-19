@@ -5,6 +5,7 @@ import io.github.komyagin.dao.PersonSqlRepository;
 import io.github.komyagin.model.Person;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -36,9 +37,16 @@ public class PersonController {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response addUser(Person person) {
+    public Response addPerson(Person person) {
         personRepository.addPerson(person);
         return Response.status(200).entity("Person added").build();
+    }
+
+    @DELETE
+    @Path("{id}")
+    public Response deletePerson(@PathParam("id") int id) {
+        personRepository.removePerson(id);
+        return Response.status(200).entity("Person deleted").build();
     }
 
 }
