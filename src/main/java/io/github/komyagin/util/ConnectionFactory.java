@@ -15,6 +15,8 @@ public class ConnectionFactory {
     private static final String USER = "postgres";
     private static final String PASSWORD = "qaz1@Wsx";
 
+    private static final String DRIVER_CLASS_NAME = "org.postgresql.Driver";
+
     private static final Logger logger = LoggerFactory.getLogger(ConnectionFactory.class);
 
     /**
@@ -27,11 +29,11 @@ public class ConnectionFactory {
 
         Connection connection = null;
         try {
-            Class.forName("org.postgresql.Driver");
+            Class.forName(DRIVER_CLASS_NAME);
             connection = DriverManager.getConnection(URL, USER, PASSWORD);
             logger.info("Connected to the PostgreSQL server successfully.");
         } catch (SQLException | ClassNotFoundException e) {
-            logger.error("Cannot connect to DB...");
+            logger.error("Cannot connect to DB...{}", e.getMessage());
         }
         return connection;
     }
