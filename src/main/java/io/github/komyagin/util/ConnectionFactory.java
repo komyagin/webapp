@@ -1,15 +1,18 @@
 package io.github.komyagin.util;
 
+import java.nio.file.ProviderNotFoundException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
 public class ConnectionFactory {
 
-    private ConnectionFactory() {}
+    private ConnectionFactory() {
+    }
 
     private static final String URL = "jdbc:postgresql://localhost/postgres?currentSchema=lab";
     private static final String USER = "postgres";
@@ -35,6 +38,11 @@ public class ConnectionFactory {
         } catch (SQLException | ClassNotFoundException e) {
             logger.error("Cannot connect to DB...{}", e.getMessage());
         }
-        return connection;
+
+        if (connection == null) {
+            throw new ProviderNotFoundException();
+        } else {
+            return connection;
+        }
     }
 }
