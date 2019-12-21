@@ -10,5 +10,4 @@ public interface PersonRepository {
     void updatePerson(Person person);
     void removePerson(int id);
     List<Person> getAllPersons();
-    boolean isExist(int id);
 }

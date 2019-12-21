@@ -71,20 +71,24 @@ public class PersonSqlRepository implements PersonRepository {
     public void updatePerson(Person person) {
         Connection connection = ConnectionFactory.getConnection();
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(PERSON_UPDATE_SQL)) {
-            preparedStatement.setString(1, person.getFirstName());
-            preparedStatement.setString(2, person.getLastName());
-            preparedStatement.setString(3, person.getEmail());
-            preparedStatement.setString(4, person.getCategory().toString());
-            preparedStatement.setInt(5, person.getId());
-            if (preparedStatement.executeUpdate() > 0) {
-                logger.info("UPDATE person to DB is succeed");
-            } else {
-                logger.warn("UPDATE person to DB is not succeed");
+        if (getPerson(person.getId()) != null) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(PERSON_UPDATE_SQL)) {
+                preparedStatement.setString(1, person.getFirstName());
+                preparedStatement.setString(2, person.getLastName());
+                preparedStatement.setString(3, person.getEmail());
+                preparedStatement.setString(4, person.getCategory().toString());
+                preparedStatement.setInt(5, person.getId());
+                if (preparedStatement.executeUpdate() > 0) {
+                    logger.info("UPDATE person to DB is succeed");
+                } else {
+                    logger.warn("UPDATE person to DB is not succeed");
+                }
+                logger.info("SQL UPDATE success...");
+            } catch (SQLException e) {
+                logger.warn("SQL Exception Person repository {}", e.getMessage());
             }
-            logger.info("SQL UPDATE success...");
-        } catch (SQLException e) {
-            logger.warn("SQL Exception Person repository {}", e.getMessage());
+        } else {
+            logger.error("Person by id={} not found. Update not possible", person.getId());
         }
     }
 
@@ -92,12 +96,16 @@ public class PersonSqlRepository implements PersonRepository {
     public void removePerson(int id) {
         Connection connection = ConnectionFactory.getConnection();
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(PERSON_DELETE_SQL)) {
-            preparedStatement.setInt(1, id);
-            preparedStatement.execute();
-            logger.info("Person has been deleted successful");
-        } catch (SQLException e) {
-            logger.error("Person by id={} not found - {}", id, e.getMessage());
+        if (getPerson(id) != null) {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(PERSON_DELETE_SQL)) {
+                preparedStatement.setInt(1, id);
+                preparedStatement.execute();
+                logger.info("Person has been deleted successful");
+            } catch (SQLException e) {
+                logger.error("Person by id={} not found - {}", id, e.getMessage());
+            }
+        } else {
+            logger.error("Person by id={} not found...", id);
         }
     }
 
@@ -107,27 +115,20 @@ public class PersonSqlRepository implements PersonRepository {
 
         Connection connection = ConnectionFactory.getConnection();
 
-        if (connection != null) {
-            try (Statement statement = connection.createStatement()) {
-                try (ResultSet resultSet = statement.executeQuery(PERSON_SELECT_ALL_SQL)) {
-                    while (resultSet.next()) {
-                        //TODO: Transfer to particular class Convert with static method statementToPerson
-                        Category category = Category.valueOf((resultSet.getString(5)).toUpperCase());
-                        Person person = new Person(resultSet.getInt(1),
-                                resultSet.getString(2), resultSet.getString(3),
-                                resultSet.getString(4), category);
-                        list.add(person);
-                    }
+        try (Statement statement = connection.createStatement()) {
+            try (ResultSet resultSet = statement.executeQuery(PERSON_SELECT_ALL_SQL)) {
+                while (resultSet.next()) {
+                    //TODO: Transfer to particular class Convert with static method statementToPerson
+                    Category category = Category.valueOf((resultSet.getString(5)).toUpperCase());
+                    Person person = new Person(resultSet.getInt(1),
+                            resultSet.getString(2), resultSet.getString(3),
+                            resultSet.getString(4), category);
+                    list.add(person);
                 }
-            } catch (SQLException e) {
-                logger.warn("Query error...");
             }
+        } catch (SQLException e) {
+            logger.warn("Query error...");
         }
         return list;
-    }
-
-    @Override
-    public boolean isExist(int id) {
-        return false;
     }
 }
