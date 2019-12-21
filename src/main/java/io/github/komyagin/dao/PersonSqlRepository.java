@@ -19,11 +19,12 @@ public class PersonSqlRepository implements PersonRepository {
     private static final Logger logger = LoggerFactory.getLogger(PersonSqlRepository.class);
 
     private static final String PERSON_SELECT_ALL_SQL = "SELECT * FROM lab.person";
-    private static final String PERSON_INSERT_SQL = "INSERT INTO lab.person (first_name, last_name, email, category) VALUES (?, ?, ?, ?)";
+    private static final String PERSON_INSERT_SQL = "INSERT INTO lab.person (first_name, last_name, email, category) " +
+            "VALUES (?, ?, ?, ?)";
     private static final String PERSON_SELECT_ID_SQL = "SELECT * FROM lab.person WHERE id = ?";
     private static final String PERSON_DELETE_SQL = "DELETE FROM lab.person WHERE id = ?";
-    private static final String PERSON_UPDATE_SQL = "UPDATE lab.person SET first_name = ?, last_name = ?, email, category = ? " +
-            "WHERE id = ?";
+    private static final String PERSON_UPDATE_SQL = "UPDATE lab.person SET first_name = ?, last_name = ?, email = ?," +
+            " category = ? WHERE id = ?";
 
     @Override
     public void addPerson(Person person) {
