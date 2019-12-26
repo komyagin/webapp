@@ -6,6 +6,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.regex.Matcher;
 
 @Path("/hello")
 public class Hello {
@@ -14,7 +15,7 @@ public class Hello {
     @Path("/{message}")
     public Response getMsg(@PathParam("message") String msg)
     {
-        String output = "Message requested : " + msg;
+        String output = "Hello " + msg;
         //Simply return the parameter passed as message
         return Response.status(201).entity(output).build();
     }

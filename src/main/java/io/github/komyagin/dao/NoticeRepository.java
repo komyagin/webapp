@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface NoticeRepository {
     void addNotice(Notice notice);
-    Notice readNotice(int id);
-    Notice updateNotice(Notice notice);
-    Notice removeNotice(int id);
-    List<Notice> showAll();
-    boolean isExist(int id);
+    Notice getNotice(int id);
+    void updateNotice(Notice notice);
+    void removeNotice(int id);
+    List<Notice> getAllNotices();
+    List<Notice> getAllNoticesByPersonId(int personId);
 }
