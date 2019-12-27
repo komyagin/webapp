@@ -18,7 +18,7 @@ import java.util.List;
 @Path("/notices")
 public class NoticeController {
 
-    NoticeService noticeService = new NoticeService();
+    private final NoticeService noticeService = new NoticeService();
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)

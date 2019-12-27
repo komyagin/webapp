@@ -6,7 +6,7 @@ import io.github.komyagin.model.Notice;
 import java.util.List;
 
 public class NoticeService {
-    NoticeSqlRepository noticeSqlRepository = new NoticeSqlRepository();
+    private final NoticeSqlRepository noticeSqlRepository = new NoticeSqlRepository();
 
     public Notice getNotice(int id) {
         return noticeSqlRepository.getNotice(id);

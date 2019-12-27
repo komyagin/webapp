@@ -9,7 +9,18 @@ http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
     <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
     <init-param>
       <param-name>com.sun.jersey.config.property.packages</param-name>
-      <param-value>io.github.komyagin.controller</param-value>
+      <param-value>
+        com.wordnik.swagger.jaxrs.json,
+        io.github.komyagin.controller
+      </param-value>
+    </init-param>
+    <init-param>
+      <param-name>jersey.config.server.provider.classnames</param-name>
+      <param-value>
+        com.wordnik.swagger.jersey.listing.ApiListingResourceJSON,
+        com.wordnik.swagger.jersey.listing.JerseyApiDeclarationProvider,
+        com.wordnik.swagger.jersey.listing.JerseyResourceListingProvider
+      </param-value>
     </init-param>
     <init-param>
       <param-name>com.sun.jersey.api.json.POJOMappingFeature</param-name>

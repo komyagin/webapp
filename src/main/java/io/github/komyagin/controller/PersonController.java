@@ -22,8 +22,8 @@ import java.util.List;
 @Path("/persons")
 public class PersonController {
 
-    PersonService personService = new PersonService();
-    NoticeService noticeService = new NoticeService();
+    private final PersonService personService = new PersonService();
+    private final NoticeService noticeService = new NoticeService();
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
