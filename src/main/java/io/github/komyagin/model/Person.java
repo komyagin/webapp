@@ -53,13 +53,4 @@ public class Person {
         this.category = category;
     }
 
-    public String toString() {
-        return "Person{" +
-                "id='" + id + '\'' +
-                ", first_name='" + firstName + '\'' +
-                ", last_name='" + lastName + '\'' +
-                ", email='" + email + '\'' +
-                ", category='" + category + '\'' +
-                '}';
-    }
 }

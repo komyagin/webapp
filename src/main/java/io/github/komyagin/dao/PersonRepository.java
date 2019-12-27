@@ -5,9 +5,9 @@ import io.github.komyagin.model.Person;
 import java.util.List;
 
 public interface PersonRepository {
-    void addPerson(Person person);
+    boolean addPerson(Person person);
     Person getPerson(int id);
-    void updatePerson(Person person);
-    void removePerson(int id);
+    boolean updatePerson(Person person);
+    boolean removePerson(int id);
     List<Person> getAllPersons();
 }

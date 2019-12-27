@@ -5,10 +5,10 @@ import io.github.komyagin.model.Notice;
 import java.util.List;
 
 public interface NoticeRepository {
-    void addNotice(Notice notice);
+    boolean addNotice(Notice notice);
     Notice getNotice(int id);
-    void updateNotice(Notice notice);
-    void removeNotice(int id);
+    boolean updateNotice(Notice notice);
+    boolean removeNotice(int id);
     List<Notice> getAllNotices();
     List<Notice> getAllNoticesByPersonId(int personId);
 }

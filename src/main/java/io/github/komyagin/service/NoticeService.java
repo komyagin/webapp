@@ -16,16 +16,16 @@ public class NoticeService {
         return noticeSqlRepository.getAllNotices();
     }
 
-    public void addNotice(Notice notice) {
-        noticeSqlRepository.addNotice(notice);
+    public boolean addNotice(Notice notice) {
+        return noticeSqlRepository.addNotice(notice);
     }
 
-    public void updateNotice(Notice notice) {
-        noticeSqlRepository.updateNotice(notice);
+    public boolean updateNotice(Notice notice) {
+        return noticeSqlRepository.updateNotice(notice);
     }
 
-    public void removeNotice(int id) {
-        noticeSqlRepository.removeNotice(id);
+    public boolean removeNotice(int id) {
+        return noticeSqlRepository.removeNotice(id);
     }
 
     public List<Notice> getNoticeByPersonId(int personId) {

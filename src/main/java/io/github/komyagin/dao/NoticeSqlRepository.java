@@ -2,6 +2,7 @@ package io.github.komyagin.dao;
 
 import io.github.komyagin.model.Category;
 import io.github.komyagin.model.Notice;
+import io.github.komyagin.service.SqlToNotice;
 import io.github.komyagin.util.ConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +31,7 @@ public class NoticeSqlRepository implements NoticeRepository {
     private static final String NOTICE_SELECT_ALL_BY_PERSON_ID_SQL = "SELECT * FROM lab.notice WHERE person_id = ?";
 
     @Override
-    public void addNotice(Notice notice) {
+    public boolean addNotice(Notice notice) {
         Connection connection = ConnectionFactory.getConnection();
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(NOTICE_INSERT_SQL)) {
@@ -43,13 +44,15 @@ public class NoticeSqlRepository implements NoticeRepository {
             preparedStatement.setString(7, notice.getCategory().toString());
             if (preparedStatement.executeUpdate() > 0 ) {
                 logger.info("INSERT notice to DB is done");
+                return true;
             } else {
                 logger.error("INSERT notice to DB is undone");
+                return false;
             }
         } catch (SQLException e) {
             logger.error("SQL error {}", e.getMessage());
+            return false;
         }
-
     }
 
     @Override
@@ -58,22 +61,18 @@ public class NoticeSqlRepository implements NoticeRepository {
 
         try (Statement statement = connection.createStatement()) {
             try (ResultSet resultSet = statement.executeQuery(NOTICE_SELECT_ID_SQL)){
-                Category category = Category.valueOf((resultSet.getString(8)).toUpperCase());
-                Notice notice = new Notice(resultSet.getInt(1), resultSet.getInt(2),
-                resultSet.getString(3), resultSet.getString(4),
-                        resultSet.getString(5), resultSet.getTimestamp(6).toLocalDateTime(),
-                        resultSet.getTimestamp(7).toLocalDateTime(), category);
+                Notice notice = SqlToNotice.getNotice(resultSet);
                 logger.info("Notice found");
                 return notice;
             }
         } catch (SQLException e) {
-            logger.error("Notice not found {}", e.getMessage());
+            logger.error("Notice not found {}", e);
         }
         return null;
     }
 
     @Override
-    public void updateNotice(Notice notice) {
+    public boolean updateNotice(Notice notice) {
         Connection connection = ConnectionFactory.getConnection();
 
         if (getNotice(notice.getId()) != null) {
@@ -87,30 +86,36 @@ public class NoticeSqlRepository implements NoticeRepository {
                 preparedStatement.setInt(7, notice.getId());
                 if (preparedStatement.executeUpdate() > 0) {
                     logger.info("UPDATE notice to DB is done");
+                    return true;
                 } else {
                     logger.warn("UPDATE notice to DB is undone");
+                    return false;
                 }
             } catch (SQLException e) {
-                logger.error("UPDATE SQL error {}", e.getMessage());
+                logger.error("UPDATE SQL error {}", e);
+                return false;
             }
         } else {
-            logger.error("Notice by id={} not found. Update not possible", notice.getId());
+            return false;
         }
     }
 
     @Override
-    public void removeNotice(int id) {
+    public boolean removeNotice(int id) {
         Connection connection = ConnectionFactory.getConnection();
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(NOTICE_DELETE_SQL)) {
             preparedStatement.setInt(1, id);
             if (preparedStatement.executeUpdate() > 0) {
                 logger.info("Notice is deleted");
+                return true;
             } else {
-                logger.warn("Notice is not deleted");
+                logger.error("Notice is not deleted");
+                return false;
             }
         } catch (SQLException e) {
-            logger.error("Removing notice error {}", e.getMessage());
+            logger.error("Removing notice error {}", e);
+            return false;
         }
     }
 
@@ -122,14 +127,7 @@ public class NoticeSqlRepository implements NoticeRepository {
 
         try (Statement statement = connection.createStatement()) {
             try (ResultSet resultSet = statement.executeQuery(NOTICE_SELECT_ALL_SQL)) {
-                while (resultSet.next()) {
-                    Category category = Category.valueOf((resultSet.getString(8)).toUpperCase());
-                    Notice notice = new Notice(resultSet.getInt(1), resultSet.getInt(2),
-                            resultSet.getString(3), resultSet.getString(4),
-                            resultSet.getString(5), resultSet.getTimestamp(6).toLocalDateTime(),
-                            resultSet.getTimestamp(7).toLocalDateTime(), category);
-                    list.add(notice);
-                }
+                list = SqlToNotice.getAllNotices(resultSet);
             }
         } catch (SQLException e) {
             logger.error("Cannot get all notices {}", e.getMessage());

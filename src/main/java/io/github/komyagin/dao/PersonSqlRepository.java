@@ -2,6 +2,7 @@ package io.github.komyagin.dao;
 
 import io.github.komyagin.model.Category;
 import io.github.komyagin.model.Person;
+import io.github.komyagin.service.SqlToPerson;
 import io.github.komyagin.util.ConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,8 +27,10 @@ public class PersonSqlRepository implements PersonRepository {
     private static final String PERSON_UPDATE_SQL = "UPDATE lab.person SET first_name = ?, last_name = ?, email = ?," +
             " category = ? WHERE id = ?";
 
+    private static final String SQL_ERROR = "SQL Exception Person repository {}";
+
     @Override
-    public void addPerson(Person person) {
+    public boolean addPerson(Person person) {
         Connection connection = ConnectionFactory.getConnection();
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(PERSON_INSERT_SQL)) {
@@ -37,12 +40,14 @@ public class PersonSqlRepository implements PersonRepository {
             preparedStatement.setString(4, person.getCategory().toString());
             if (preparedStatement.executeUpdate() > 0) {
                 logger.info("INSERT person to DB is succeed");
+                return true;
             } else {
-                logger.warn("INSERT person to DB is not succeed");
+                logger.info("SQL Insert is not succeed...");
+                return false;
             }
-            logger.info("SQL Insert success...");
         } catch (SQLException e) {
-            logger.warn("SQL Exception Person repository {}", e.getMessage());
+            logger.error(SQL_ERROR, e);
+            return false;
         }
     }
 
@@ -52,23 +57,18 @@ public class PersonSqlRepository implements PersonRepository {
 
         try (Statement statement = connection.createStatement()) {
             try (ResultSet resultSet = statement.executeQuery(PERSON_SELECT_ID_SQL)) {
-                //TODO: Transfer to particular class Convert with static method statementToPerson
-                Category category = Category.valueOf((resultSet.getString(5)).toUpperCase());
-                Person person = new Person(resultSet.getInt(1),
-                        resultSet.getString(2), resultSet.getString(3),
-                        resultSet.getString(4), category);
+                Person person = SqlToPerson.getPerson(resultSet);
                 logger.info("Person found");
                 return person;
             }
         } catch (SQLException e) {
-            logger.error("Person not found {}", e.getMessage());
+            logger.error(SQL_ERROR, e);
         }
-        //TODO: not good to return null... I have to return something better
         return null;
     }
 
     @Override
-    public void updatePerson(Person person) {
+    public boolean updatePerson(Person person) {
         Connection connection = ConnectionFactory.getConnection();
 
         if (getPerson(person.getId()) != null) {
@@ -80,20 +80,21 @@ public class PersonSqlRepository implements PersonRepository {
                 preparedStatement.setInt(5, person.getId());
                 if (preparedStatement.executeUpdate() > 0) {
                     logger.info("UPDATE person to DB is succeed");
-                } else {
-                    logger.warn("UPDATE person to DB is not succeed");
+                    return true;
                 }
-                logger.info("SQL UPDATE success...");
             } catch (SQLException e) {
-                logger.warn("SQL Exception Person repository {}", e.getMessage());
+                logger.warn(SQL_ERROR, e);
+                return false;
             }
         } else {
             logger.error("Person by id={} not found. Update not possible", person.getId());
+            return false;
         }
+        return false;
     }
 
     @Override
-    public void removePerson(int id) {
+    public boolean removePerson(int id) {
         Connection connection = ConnectionFactory.getConnection();
 
         if (getPerson(id) != null) {
@@ -101,12 +102,15 @@ public class PersonSqlRepository implements PersonRepository {
                 preparedStatement.setInt(1, id);
                 preparedStatement.execute();
                 logger.info("Person has been deleted successful");
+                return true;
             } catch (SQLException e) {
-                logger.error("Person by id={} not found - {}", id, e.getMessage());
+                logger.error(SQL_ERROR, e);
+                return false;
             }
         } else {
             logger.error("Person by id={} not found...", id);
         }
+        return false;
     }
 
     @Override
@@ -117,17 +121,11 @@ public class PersonSqlRepository implements PersonRepository {
 
         try (Statement statement = connection.createStatement()) {
             try (ResultSet resultSet = statement.executeQuery(PERSON_SELECT_ALL_SQL)) {
-                while (resultSet.next()) {
-                    //TODO: Transfer to particular class Convert with static method statementToPerson
-                    Category category = Category.valueOf((resultSet.getString(5)).toUpperCase());
-                    Person person = new Person(resultSet.getInt(1),
-                            resultSet.getString(2), resultSet.getString(3),
-                            resultSet.getString(4), category);
-                    list.add(person);
-                }
+                list = SqlToPerson.getAllPerons(resultSet);
+                logger.info("All persons are found");
             }
         } catch (SQLException e) {
-            logger.warn("Query error...");
+            logger.error(SQL_ERROR, e);
         }
         return list;
     }

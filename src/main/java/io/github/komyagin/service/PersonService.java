@@ -17,15 +17,15 @@ public class PersonService {
         return personRepository.getAllPersons();
     }
 
-    public void addPerson(Person person) {
-        personRepository.addPerson(person);
+    public boolean addPerson(Person person) {
+        return personRepository.addPerson(person);
     }
 
-    public void removePerson(int id) {
-        personRepository.removePerson(id);
+    public boolean removePerson(int id) {
+        return personRepository.removePerson(id);
     }
 
-    public void updatePerson(Person person) {
-        personRepository.updatePerson(person);
+    public boolean updatePerson(Person person) {
+        return personRepository.updatePerson(person);
     }
 }

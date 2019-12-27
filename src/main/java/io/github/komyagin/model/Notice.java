@@ -5,6 +5,25 @@ import java.time.LocalDateTime;
 public class Notice {
 
     private int id;
+    private int personId;
+    private String header;
+    private String body;
+    private String telNumber;
+    private LocalDateTime createdLocalDateTime;
+    private LocalDateTime updatedLocalDateTime;
+    private Category category;
+
+    public Notice(int id, int personId, String header, String body, String telNumber, LocalDateTime createdLocalDateTime,
+                  LocalDateTime updatedLocalDateTime, Category category) {
+        this.id = id;
+        this.personId = personId;
+        this.header = header;
+        this.body = body;
+        this.telNumber = telNumber;
+        this.createdLocalDateTime = createdLocalDateTime;
+        this.updatedLocalDateTime = updatedLocalDateTime;
+        this.category = category;
+    }
 
     public int getId() {
         return id;
@@ -65,25 +84,5 @@ public class Notice {
     public Category getCategory() {
         return category;
     }
-
-    public Notice(int id, int personId, String header, String body, String telNumber, LocalDateTime createdLocalDateTime,
-                  LocalDateTime updatedLocalDateTime, Category category) {
-        this.id = id;
-        this.personId = personId;
-        this.header = header;
-        this.body = body;
-        this.telNumber = telNumber;
-        this.createdLocalDateTime = createdLocalDateTime;
-        this.updatedLocalDateTime = updatedLocalDateTime;
-        this.category = category;
-    }
-
-    private int personId;
-    private String header;
-    private String body;
-    private String telNumber;
-    private LocalDateTime createdLocalDateTime;
-    private LocalDateTime updatedLocalDateTime;
-    private Category category;
 
 }
