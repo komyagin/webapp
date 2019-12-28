@@ -31,4 +31,8 @@ public class NoticeService {
     public List<Notice> getNoticeByPersonId(int personId) {
         return noticeSqlRepository.getAllNoticesByPersonId(personId);
     }
+
+    public boolean removeNoticesByPersonId(int personId) {
+        return noticeSqlRepository.removeNoticesByPersonId(personId);
+    }
 }
