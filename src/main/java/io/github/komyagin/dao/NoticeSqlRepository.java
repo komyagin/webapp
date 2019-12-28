@@ -30,11 +30,13 @@ public class NoticeSqlRepository implements NoticeRepository {
     private static final String NOTICE_DELETE_SQL = "DELETE FROM lab.notice WHERE id = ?";
     private static final String NOTICE_SELECT_ALL_BY_PERSON_ID_SQL = "SELECT * FROM lab.notice WHERE person_id = ?";
 
+    private static final String PERSONS_NOTICES_DELETE_SQL = "DELETE FROM lab.notice WHERE person_id = ?";
+
     @Override
     public boolean addNotice(Notice notice) {
-        Connection connection = ConnectionFactory.getConnection();
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(NOTICE_INSERT_SQL)) {
+        try (Connection connection = ConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(NOTICE_INSERT_SQL)) {
             preparedStatement.setInt(1, notice.getPersonId());
             preparedStatement.setString(2, notice.getHeader());
             preparedStatement.setString(3, notice.getBody());
@@ -42,7 +44,7 @@ public class NoticeSqlRepository implements NoticeRepository {
             preparedStatement.setTimestamp(5, Timestamp.valueOf(notice.getCreatedLocalDateTime()));
             preparedStatement.setTimestamp(6, Timestamp.valueOf(notice.getUpdatedLocalDateTime()));
             preparedStatement.setString(7, notice.getCategory().toString());
-            if (preparedStatement.executeUpdate() > 0 ) {
+            if (preparedStatement.executeUpdate() > 0) {
                 logger.info("INSERT notice to DB is done");
                 return true;
             } else {
@@ -57,14 +59,12 @@ public class NoticeSqlRepository implements NoticeRepository {
 
     @Override
     public Notice getNotice(int id) {
-        Connection connection = ConnectionFactory.getConnection();
-
-        try (Statement statement = connection.createStatement()) {
-            try (ResultSet resultSet = statement.executeQuery(NOTICE_SELECT_ID_SQL)){
-                Notice notice = SqlToNotice.getNotice(resultSet);
-                logger.info("Notice found");
-                return notice;
-            }
+        try (Connection connection = ConnectionFactory.getConnection();
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(NOTICE_SELECT_ID_SQL)) {
+            Notice notice = SqlToNotice.getNotice(resultSet);
+            logger.info("Notice found");
+            return notice;
         } catch (SQLException e) {
             logger.error("Notice not found {}", e);
         }
@@ -73,10 +73,9 @@ public class NoticeSqlRepository implements NoticeRepository {
 
     @Override
     public boolean updateNotice(Notice notice) {
-        Connection connection = ConnectionFactory.getConnection();
-
         if (getNotice(notice.getId()) != null) {
-            try (PreparedStatement preparedStatement = connection.prepareStatement(NOTICE_UPDATE_SQL)) {
+            try (Connection connection = ConnectionFactory.getConnection();
+                 PreparedStatement preparedStatement = connection.prepareStatement(NOTICE_UPDATE_SQL)) {
                 preparedStatement.setInt(1, notice.getPersonId());
                 preparedStatement.setString(2, notice.getHeader());
                 preparedStatement.setString(3, notice.getBody());
@@ -102,9 +101,9 @@ public class NoticeSqlRepository implements NoticeRepository {
 
     @Override
     public boolean removeNotice(int id) {
-        Connection connection = ConnectionFactory.getConnection();
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(NOTICE_DELETE_SQL)) {
+        try (Connection connection = ConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(NOTICE_DELETE_SQL)) {
             preparedStatement.setInt(1, id);
             if (preparedStatement.executeUpdate() > 0) {
                 logger.info("Notice is deleted");
@@ -123,25 +122,36 @@ public class NoticeSqlRepository implements NoticeRepository {
     public List<Notice> getAllNotices() {
         List<Notice> list = new ArrayList<>();
 
-        Connection connection = ConnectionFactory.getConnection();
-
-        try (Statement statement = connection.createStatement()) {
-            try (ResultSet resultSet = statement.executeQuery(NOTICE_SELECT_ALL_SQL)) {
-                list = SqlToNotice.getAllNotices(resultSet);
-            }
+        try (Connection connection = ConnectionFactory.getConnection();
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(NOTICE_SELECT_ALL_SQL)) {
+            list = SqlToNotice.getAllNotices(resultSet);
         } catch (SQLException e) {
             logger.error("Cannot get all notices {}", e.getMessage());
         }
         return list;
     }
 
+    public boolean removeNoticesByPersonId(int id) {
+        try (Connection connection = ConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(PERSONS_NOTICES_DELETE_SQL)) {
+            if (preparedStatement.executeUpdate() > 0) {
+                logger.info("Notices by person_id removed");
+                return true;
+            }
+        }catch (SQLException e) {
+            logger.error("Notices didn't removed", e);
+            return false;
+        }
+        return false;
+    }
+
     @Override
     public List<Notice> getAllNoticesByPersonId(int personId) {
         List<Notice> list = new ArrayList<>();
 
-        Connection connection = ConnectionFactory.getConnection();
-
-        try (PreparedStatement preparedStatement = connection.prepareStatement(NOTICE_SELECT_ALL_BY_PERSON_ID_SQL)) {
+        try (Connection connection = ConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(NOTICE_SELECT_ALL_BY_PERSON_ID_SQL)) {
             preparedStatement.setInt(1, personId);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 while (resultSet.next()) {
