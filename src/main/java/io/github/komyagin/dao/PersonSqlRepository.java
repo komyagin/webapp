@@ -1,7 +1,7 @@
 package io.github.komyagin.dao;
 
-import io.github.komyagin.model.Category;
 import io.github.komyagin.model.Person;
+import io.github.komyagin.service.NoticeService;
 import io.github.komyagin.service.SqlToPerson;
 import io.github.komyagin.util.ConnectionFactory;
 import org.slf4j.Logger;
@@ -27,13 +27,15 @@ public class PersonSqlRepository implements PersonRepository {
     private static final String PERSON_UPDATE_SQL = "UPDATE lab.person SET first_name = ?, last_name = ?, email = ?," +
             " category = ? WHERE id = ?";
 
+    private static final String PERSONS_NOTICES_DELETE_SQL = "DELETE FROM lab.notice WHERE person_id = ?";
+
     private static final String SQL_ERROR = "SQL Exception Person repository {}";
 
     @Override
     public boolean addPerson(Person person) {
-        Connection connection = ConnectionFactory.getConnection();
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(PERSON_INSERT_SQL)) {
+        try (Connection connection = ConnectionFactory.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(PERSON_INSERT_SQL)) {
             preparedStatement.setString(1, person.getFirstName());
             preparedStatement.setString(2, person.getLastName());
             preparedStatement.setString(3, person.getEmail());
@@ -53,14 +55,12 @@ public class PersonSqlRepository implements PersonRepository {
 
     @Override
     public Person getPerson(int id) {
-        Connection connection = ConnectionFactory.getConnection();
-
-        try (Statement statement = connection.createStatement()) {
-            try (ResultSet resultSet = statement.executeQuery(PERSON_SELECT_ID_SQL)) {
-                Person person = SqlToPerson.getPerson(resultSet);
-                logger.info("Person found");
-                return person;
-            }
+        try (Connection connection = ConnectionFactory.getConnection();
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(PERSON_SELECT_ID_SQL)) {
+            Person person = SqlToPerson.getPerson(resultSet);
+            logger.info("Person found");
+            return person;
         } catch (SQLException e) {
             logger.error(SQL_ERROR, e);
         }
@@ -69,10 +69,11 @@ public class PersonSqlRepository implements PersonRepository {
 
     @Override
     public boolean updatePerson(Person person) {
-        Connection connection = ConnectionFactory.getConnection();
+
 
         if (getPerson(person.getId()) != null) {
-            try (PreparedStatement preparedStatement = connection.prepareStatement(PERSON_UPDATE_SQL)) {
+            try (Connection connection = ConnectionFactory.getConnection();
+                 PreparedStatement preparedStatement = connection.prepareStatement(PERSON_UPDATE_SQL)) {
                 preparedStatement.setString(1, person.getFirstName());
                 preparedStatement.setString(2, person.getLastName());
                 preparedStatement.setString(3, person.getEmail());
@@ -95,12 +96,12 @@ public class PersonSqlRepository implements PersonRepository {
 
     @Override
     public boolean removePerson(int id) {
-        Connection connection = ConnectionFactory.getConnection();
-
         if (getPerson(id) != null) {
-            try (PreparedStatement preparedStatement = connection.prepareStatement(PERSON_DELETE_SQL)) {
+            try (Connection connection = ConnectionFactory.getConnection();
+                 PreparedStatement preparedStatement = connection.prepareStatement(PERSON_DELETE_SQL)) {
                 preparedStatement.setInt(1, id);
                 preparedStatement.execute();
+                //TODO Remove notice by person_id
                 logger.info("Person has been deleted successful");
                 return true;
             } catch (SQLException e) {
@@ -117,13 +118,12 @@ public class PersonSqlRepository implements PersonRepository {
     public List<Person> getAllPersons() {
         List<Person> list = new ArrayList<>();
 
-        Connection connection = ConnectionFactory.getConnection();
 
-        try (Statement statement = connection.createStatement()) {
-            try (ResultSet resultSet = statement.executeQuery(PERSON_SELECT_ALL_SQL)) {
-                list = SqlToPerson.getAllPerons(resultSet);
-                logger.info("All persons are found");
-            }
+        try (Connection connection = ConnectionFactory.getConnection();
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery(PERSON_SELECT_ALL_SQL)) {
+            list = SqlToPerson.getAllPerons(resultSet);
+            logger.info("All persons are found");
         } catch (SQLException e) {
             logger.error(SQL_ERROR, e);
         }
