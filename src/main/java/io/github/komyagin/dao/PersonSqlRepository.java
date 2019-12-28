@@ -1,7 +1,6 @@
 package io.github.komyagin.dao;
 
 import io.github.komyagin.model.Person;
-import io.github.komyagin.service.NoticeService;
 import io.github.komyagin.service.SqlToPerson;
 import io.github.komyagin.util.ConnectionFactory;
 import org.slf4j.Logger;
@@ -26,8 +25,6 @@ public class PersonSqlRepository implements PersonRepository {
     private static final String PERSON_DELETE_SQL = "DELETE FROM lab.person WHERE id = ?";
     private static final String PERSON_UPDATE_SQL = "UPDATE lab.person SET first_name = ?, last_name = ?, email = ?," +
             " category = ? WHERE id = ?";
-
-    private static final String PERSONS_NOTICES_DELETE_SQL = "DELETE FROM lab.notice WHERE person_id = ?";
 
     private static final String SQL_ERROR = "SQL Exception Person repository {}";
 
