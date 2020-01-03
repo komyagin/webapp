@@ -16,7 +16,7 @@ public class ConnectionFactory {
 
     private static final String URL = "jdbc:postgresql://localhost/postgres?currentSchema=lab";
     private static final String USER = "postgres";
-    private static final String PASSWORD = "qaz1@Wsx";
+    private static final String PASSWORD = "postgres";
 
     private static final String DRIVER_CLASS_NAME = "org.postgresql.Driver";
 
