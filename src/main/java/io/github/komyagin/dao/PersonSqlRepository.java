@@ -7,11 +7,7 @@ import io.github.komyagin.util.ConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,7 +18,7 @@ public class PersonSqlRepository implements PersonRepository {
     private static final String PERSON_SELECT_ALL_SQL = "SELECT * FROM lab.person";
     private static final String PERSON_INSERT_SQL = "INSERT INTO lab.person (first_name, last_name, email, category) " +
             "VALUES (?, ?, ?, ?)";
-    private static final String PERSON_SELECT_ID_SQL = "SELECT * FROM lab.person WHERE id = ?";
+    private static final String PERSON_SELECT_BY_ID_SQL = "SELECT * FROM lab.person WHERE id = ?";
     private static final String PERSON_DELETE_SQL = "DELETE FROM lab.person WHERE id = ?";
     private static final String PERSON_UPDATE_SQL = "UPDATE lab.person SET first_name = ?, last_name = ?, email = ?," +
             " category = ? WHERE id = ?";
@@ -54,11 +50,10 @@ public class PersonSqlRepository implements PersonRepository {
     @Override
     public Person getPerson(int id) {
         try (Connection connection = ConnectionFactory.getConnection();
-             Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(PERSON_SELECT_ID_SQL)) {
-            Person person = SqlToPerson.getPerson(resultSet);
-            logger.info("Person found");
-            return person;
+             PreparedStatement preparedStatement = connection.prepareStatement(PERSON_SELECT_BY_ID_SQL);
+             ) {
+            preparedStatement.setInt(1, id);
+            return SqlToPerson.getPerson(preparedStatement.executeQuery());
         } catch (SQLException e) {
             logger.error(SQL_ERROR, e);
         }

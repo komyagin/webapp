@@ -13,10 +13,13 @@ public class SqlToPerson {
     private SqlToPerson() {};
 
     public static Person getPerson(ResultSet resultSet) throws SQLException {
-        Category category = Category.valueOf((resultSet.getString(5)).toUpperCase());
-        return new Person(resultSet.getInt(1),
-                resultSet.getString(2), resultSet.getString(3),
-                resultSet.getString(4), category);
+        if (resultSet.next()) {
+            Category category = Category.valueOf((resultSet.getString(5)).toUpperCase());
+            return new Person(resultSet.getInt(1),
+                    resultSet.getString(2), resultSet.getString(3),
+                    resultSet.getString(4), category);
+        }
+        return null;
     }
 
     public static List<Person> getAllPerons(ResultSet resultSet) throws SQLException {

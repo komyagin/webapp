@@ -7,12 +7,7 @@ import io.github.komyagin.util.ConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +16,7 @@ public class NoticeSqlRepository implements NoticeRepository {
     private static final Logger logger = LoggerFactory.getLogger(NoticeSqlRepository.class);
 
     private static final String NOTICE_SELECT_ALL_SQL = "SELECT * FROM lab.notice";
-    private static final String NOTICE_SELECT_ID_SQL = "SELECT * FROM lab.notice WHERE id = ?";
+    private static final String NOTICE_SELECT_BY_ID_SQL = "SELECT * FROM lab.notice WHERE id = ?";
     private static final String NOTICE_INSERT_SQL = "INSERT INTO lab.notice " +
             "(person_id, header, body, tel_number, created_date, updated_date, category) " +
             "VALUES (?, ?, ?, ?, ?, ?, ?)";
@@ -61,10 +56,9 @@ public class NoticeSqlRepository implements NoticeRepository {
     public Notice getNotice(int id) {
         try (Connection connection = ConnectionFactory.getConnection();
              Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(NOTICE_SELECT_ID_SQL)) {
-            Notice notice = SqlToNotice.getNotice(resultSet);
-            logger.info("Notice found");
-            return notice;
+             PreparedStatement preparedStatement = connection.prepareStatement(NOTICE_SELECT_BY_ID_SQL)) {
+            preparedStatement.setInt(1, id);
+            return SqlToNotice.getNotice(preparedStatement.executeQuery());
         } catch (SQLException e) {
             logger.error("Notice not found {}", e);
         }

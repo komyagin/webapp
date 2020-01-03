@@ -4,14 +4,7 @@ import io.github.komyagin.model.Person;
 import io.github.komyagin.service.NoticeService;
 import io.github.komyagin.service.PersonService;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.PUT;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
@@ -41,7 +34,7 @@ public class PersonController {
         if (person != null) {
             return Response.status(200).entity(person).build();
         } else {
-            return Response.status(404).entity("Person by " + id + " not found").build();
+            return Response.status(404).entity("Person by id=" + id + " not found").build();
         }
     }
 
@@ -81,7 +74,7 @@ public class PersonController {
     @Path("/{id}")
     public Response deletePerson(@PathParam("id") int id) {
         if (personService.removePerson(id)) {
-            return Response.status(200).entity("Person deleted").build();
+            return Response.status(204).entity("Person deleted").build();
         } else {
             return Response.status(404).entity("Person not found").build();
         }
