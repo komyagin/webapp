@@ -10,6 +10,8 @@ http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
     <init-param>
       <param-name>com.sun.jersey.config.property.packages</param-name>
       <param-value>
+        com.wordnik.swagger.jaxrs.json,
+        com.wordnik.swagger.jersey.listing,
         io.github.komyagin.controller
       </param-value>
     </init-param>
