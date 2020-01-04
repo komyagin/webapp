@@ -1,5 +1,9 @@
 package io.github.komyagin.controller;
 
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiResponse;
+import com.wordnik.swagger.annotations.ApiResponses;
 import io.github.komyagin.model.Person;
 import io.github.komyagin.service.NoticeService;
 import io.github.komyagin.service.PersonService;
@@ -10,6 +14,7 @@ import javax.ws.rs.core.Response;
 import java.util.List;
 
 @Path("/persons")
+@Api(value = "persons", description = "Operation with persons")
 public class PersonController {
 
     private final PersonService personService = new PersonService();
@@ -17,9 +22,17 @@ public class PersonController {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(value = "Getting all of the persons from DB created by user",
+            response = Person.class,
+            responseContainer = "List")
+    @ApiResponses(value = {
+            @ApiResponse(code = 400, message = "Invalid request"),
+            @ApiResponse(code = 401, message = "Request is not authorized"),
+            @ApiResponse(code = 500, message = "Error processing request"),
+    })
     public Response getPerson() {
         List<Person> people = personService.getAllPersons();
-        if(!people.isEmpty()) {
+        if (!people.isEmpty()) {
             return Response.status(200).entity(people).build();
         } else {
             return Response.status(404).entity("Persons - Not found").build();
@@ -53,7 +66,7 @@ public class PersonController {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response addPerson(Person person) {
-        if(personService.addPerson(person)) {
+        if (personService.addPerson(person)) {
             return Response.status(200).entity("Person added").build();
         } else {
             return Response.status(406).entity("Not acceptable").build();
