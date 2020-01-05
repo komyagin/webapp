@@ -1,5 +1,9 @@
 package io.github.komyagin.controller;
 
+import com.wordnik.swagger.annotations.Api;
+import com.wordnik.swagger.annotations.ApiOperation;
+import com.wordnik.swagger.annotations.ApiResponse;
+import com.wordnik.swagger.annotations.ApiResponses;
 import io.github.komyagin.model.Notice;
 import io.github.komyagin.service.NoticeService;
 
@@ -9,12 +13,22 @@ import javax.ws.rs.core.Response;
 import java.util.List;
 
 @Path("/notices")
+@Api(value = "notices", description = "Operation with persons' notices in DB")
 public class NoticeController {
 
     private final NoticeService noticeService = new NoticeService();
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
+    @ApiOperation(
+            value = "Getting all of the notices from DB created by user",
+            response = Notice.class,
+            responseContainer = "List")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(code = 200, message = "Notices are received"),
+                    @ApiResponse(code = 404, message = "DB has no notices"),
+            })
     public Response getNotices() {
         List<Notice> notices = noticeService.getAllNotices();
         if (!notices.isEmpty()) {

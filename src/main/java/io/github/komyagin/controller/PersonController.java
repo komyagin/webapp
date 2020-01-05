@@ -22,14 +22,15 @@ public class PersonController {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Getting all of the persons from DB created by user",
+    @ApiOperation(
+            value = "Getting all of the persons from DB created by user",
             response = Person.class,
             responseContainer = "List")
-    @ApiResponses(value = {
-            @ApiResponse(code = 400, message = "Invalid request"),
-            @ApiResponse(code = 401, message = "Request is not authorized"),
-            @ApiResponse(code = 500, message = "Error processing request"),
-    })
+    @ApiResponses(
+            value = {
+                    @ApiResponse(code = 200, message = "Persons are received"),
+                    @ApiResponse(code = 404, message = "DB has no persons"),
+            })
     public Response getPerson() {
         List<Person> people = personService.getAllPersons();
         if (!people.isEmpty()) {
