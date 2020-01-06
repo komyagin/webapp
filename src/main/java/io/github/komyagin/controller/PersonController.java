@@ -41,6 +41,7 @@ public class PersonController {
     @Path("/{id}")
     @ApiOperation(
             value = "Get user by its ID",
+            response = Person.class,
             notes = "You need to know user's ID")
     @ApiResponses(
             value = {
@@ -64,6 +65,7 @@ public class PersonController {
     @Path("/{id}/notices")
     @ApiOperation(
             value = "Get user's notices by its ID",
+            response = List.class,
             notes = "You can receive notices only if person added it"
     )
     @ApiResponses(
@@ -85,6 +87,15 @@ public class PersonController {
     }
 
     @POST
+    @ApiOperation(
+            value = "Add user"
+    )
+    @ApiResponses(
+            value = {
+                    @ApiResponse(code = 200, message = "Person added"),
+                    @ApiResponse(code = 406, message = "Not acceptable input data")
+            }
+    )
     @Consumes(MediaType.APPLICATION_JSON)
     public Response addPerson(Person person) {
         if (personService.addPerson(person)) {
