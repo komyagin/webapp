@@ -1,11 +1,20 @@
 package io.github.komyagin.model;
 
+import com.wordnik.swagger.annotations.ApiModel;
+import com.wordnik.swagger.annotations.ApiModelProperty;
+
+@ApiModel(description = "All details about the Person. ")
 public class Person {
 
+    @ApiModelProperty(notes = "The database generated person ID")
     private int id;
+    @ApiModelProperty(notes = "The person first name")
     private String firstName;
+    @ApiModelProperty(notes = "The person last name")
     private String lastName;
+    @ApiModelProperty(notes = "The person email. Unique")
     private String email;
+    @ApiModelProperty(notes = "The peson category. Individual or company")
     private Category category;
 
     public Person(int id, String firstName, String lastName, String email, Category category) {
