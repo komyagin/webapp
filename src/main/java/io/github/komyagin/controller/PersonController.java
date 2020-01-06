@@ -11,7 +11,7 @@ import javax.ws.rs.core.Response;
 import java.util.List;
 
 @Path("/persons")
-@Api(value = "persons", description = "Operation with persons")
+@Api(value = "persons", description = "Operation with persons in database")
 public class PersonController {
 
     private final PersonService personService = new PersonService();
@@ -19,7 +19,9 @@ public class PersonController {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(value = "Getting all of the persons from DB created by user", response = Person.class,
+    @ApiOperation(
+            value = "Getting all of the persons from DB created by user",
+            response = Person.class,
             responseContainer = "List")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Persons are received"),
@@ -43,7 +45,7 @@ public class PersonController {
     })
     @Produces(MediaType.APPLICATION_JSON)
     public Response getPerson(
-            @ApiParam(value = "Person's ID that you need to get user")
+            @ApiParam(value = "Person ID that you need to get user")
             @PathParam("id") Integer id) {
         Person person = personService.getPerson(id);
         if (person != null) {
@@ -109,7 +111,7 @@ public class PersonController {
     }
 
     @DELETE
-    @ApiOperation(value = "Delete user by its ID", notes = "You need to know user's ID to delete user. All person's " +
+    @ApiOperation(value = "Delete user by its ID", notes = "You need to know user ID to delete user. All person's " +
             "notices will be deleted.")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Person is deleted"),
@@ -120,6 +122,7 @@ public class PersonController {
             @ApiParam(value = "Person's ID that you need to delete user")
             @PathParam("id") int id) {
         if (personService.removePerson(id)) {
+            noticeService.removeNoticesByPersonId(id);
             return Response.status(204).entity("Person deleted").build();
         } else {
             return Response.status(404).entity("Person not found").build();
