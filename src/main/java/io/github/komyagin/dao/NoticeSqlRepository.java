@@ -20,12 +20,12 @@ public class NoticeSqlRepository implements NoticeRepository {
     private static final String NOTICE_INSERT_SQL = "INSERT INTO lab.notice " +
             "(person_id, header, body, tel_number, created_date, updated_date, category) " +
             "VALUES (?, ?, ?, ?, ?, ?, ?)";
-    private static final String NOTICE_UPDATE_SQL = "UPDATE lab.notice SET person_id = ?, header = ?, " +
+    private static final String NOTICE_UPDATE_BY_ID_SQL = "UPDATE lab.notice SET person_id = ?, header = ?, body = ?, " +
             "tel_number = ?, updated_date = ?, category = ? WHERE id = ?";
     private static final String NOTICE_DELETE_SQL = "DELETE FROM lab.notice WHERE id = ?";
     private static final String NOTICE_SELECT_ALL_BY_PERSON_ID_SQL = "SELECT * FROM lab.notice WHERE person_id = ?";
 
-    private static final String PERSONS_NOTICES_DELETE_SQL = "DELETE FROM lab.notice WHERE person_id = ?";
+    private static final String PERSONS_NOTICES_DELETE_BY_PERSON_ID_SQL = "DELETE FROM lab.notice WHERE person_id = ?";
 
     @Override
     public boolean addNotice(Notice notice) {
@@ -69,7 +69,7 @@ public class NoticeSqlRepository implements NoticeRepository {
     public boolean updateNotice(Notice notice) {
         if (getNotice(notice.getId()) != null) {
             try (Connection connection = ConnectionFactory.getConnection();
-                 PreparedStatement preparedStatement = connection.prepareStatement(NOTICE_UPDATE_SQL)) {
+                 PreparedStatement preparedStatement = connection.prepareStatement(NOTICE_UPDATE_BY_ID_SQL)) {
                 preparedStatement.setInt(1, notice.getPersonId());
                 preparedStatement.setString(2, notice.getHeader());
                 preparedStatement.setString(3, notice.getBody());
@@ -128,7 +128,8 @@ public class NoticeSqlRepository implements NoticeRepository {
 
     public boolean removeNoticesByPersonId(int id) {
         try (Connection connection = ConnectionFactory.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(PERSONS_NOTICES_DELETE_SQL)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(PERSONS_NOTICES_DELETE_BY_PERSON_ID_SQL)) {
+            preparedStatement.setInt(1, id);
             if (preparedStatement.executeUpdate() > 0) {
                 logger.info("Notices by person_id removed");
                 return true;
