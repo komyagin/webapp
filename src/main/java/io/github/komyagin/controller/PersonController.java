@@ -1,9 +1,9 @@
 package io.github.komyagin.controller;
 
-import com.wordnik.swagger.annotations.*;
 import io.github.komyagin.model.Person;
 import io.github.komyagin.service.NoticeService;
 import io.github.komyagin.service.PersonService;
+import io.swagger.annotations.*;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
