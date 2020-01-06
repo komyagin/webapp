@@ -1,9 +1,6 @@
 package io.github.komyagin.controller;
 
-import com.wordnik.swagger.annotations.Api;
-import com.wordnik.swagger.annotations.ApiOperation;
-import com.wordnik.swagger.annotations.ApiResponse;
-import com.wordnik.swagger.annotations.ApiResponses;
+import com.wordnik.swagger.annotations.*;
 import io.github.komyagin.model.Person;
 import io.github.komyagin.service.NoticeService;
 import io.github.komyagin.service.PersonService;
@@ -42,8 +39,19 @@ public class PersonController {
 
     @GET
     @Path("/{id}")
+    @ApiOperation(
+            value = "Get user by its ID",
+            notes = "You need to know user's ID")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(code = 200, message = "Person is received by ID"),
+                    @ApiResponse(code = 404, message = "Person by ID not found")
+            }
+    )
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getPerson(@PathParam("id") Integer id) {
+    public Response getPerson(
+            @ApiParam(value = "Person's ID that you need to get user")
+            @PathParam("id") Integer id) {
         Person person = personService.getPerson(id);
         if (person != null) {
             return Response.status(200).entity(person).build();
@@ -54,8 +62,20 @@ public class PersonController {
 
     @GET
     @Path("/{id}/notices")
+    @ApiOperation(
+            value = "Get user's notices by its ID",
+            notes = "You can receive notices only if person added it"
+    )
+    @ApiResponses(
+            value = {
+                    @ApiResponse(code = 200, message = "Person's notices are received"),
+                    @ApiResponse(code = 404, message = "Person has no notices")
+            }
+    )
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getPersonsNotices(@PathParam("id") Integer id) {
+    public Response getPersonsNotices(
+            @ApiParam(value = "Person's ID that you need to receive its notices")
+            @PathParam("id") Integer id) {
         List notices = noticeService.getNoticeByPersonId(id);
         if (!notices.isEmpty()) {
             return Response.status(200).entity(notices).build();
@@ -85,8 +105,21 @@ public class PersonController {
     }
 
     @DELETE
+    @ApiOperation(
+            value = "Delete user by its ID",
+            notes = "You need to know user's ID to delete user. All person's " +
+                    "notices will be deleted."
+    )
+    @ApiResponses(
+            value = {
+                    @ApiResponse(code = 200, message = "Person is deleted"),
+                    @ApiResponse(code = 404, message = "Person not found")
+            }
+    )
     @Path("/{id}")
-    public Response deletePerson(@PathParam("id") int id) {
+    public Response deletePerson(
+            @ApiParam(value = "Person's ID that you need to delete user")
+            @PathParam("id") int id) {
         if (personService.removePerson(id)) {
             return Response.status(204).entity("Person deleted").build();
         } else {
