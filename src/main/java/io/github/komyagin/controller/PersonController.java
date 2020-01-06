@@ -19,15 +19,12 @@ public class PersonController {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    @ApiOperation(
-            value = "Getting all of the persons from DB created by user",
-            response = Person.class,
+    @ApiOperation(value = "Getting all of the persons from DB created by user", response = Person.class,
             responseContainer = "List")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(code = 200, message = "Persons are received"),
-                    @ApiResponse(code = 404, message = "DB has no persons"),
-            })
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Persons are received"),
+            @ApiResponse(code = 404, message = "DB has no persons"),
+    })
     public Response getPerson() {
         List<Person> people = personService.getAllPersons();
         if (!people.isEmpty()) {
@@ -39,16 +36,11 @@ public class PersonController {
 
     @GET
     @Path("/{id}")
-    @ApiOperation(
-            value = "Get user by its ID",
-            response = Person.class,
-            notes = "You need to know user's ID")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(code = 200, message = "Person is received by ID"),
-                    @ApiResponse(code = 404, message = "Person by ID not found")
-            }
-    )
+    @ApiOperation(value = "Get user by its ID", response = Person.class, notes = "You need to know user's ID")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Person is received by ID"),
+            @ApiResponse(code = 404, message = "Person by ID not found")
+    })
     @Produces(MediaType.APPLICATION_JSON)
     public Response getPerson(
             @ApiParam(value = "Person's ID that you need to get user")
@@ -68,12 +60,10 @@ public class PersonController {
             response = List.class,
             notes = "You can receive notices only if person added it"
     )
-    @ApiResponses(
-            value = {
-                    @ApiResponse(code = 200, message = "Person's notices are received"),
-                    @ApiResponse(code = 404, message = "Person has no notices")
-            }
-    )
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Person's notices are received"),
+            @ApiResponse(code = 404, message = "Person has no notices")
+    })
     @Produces(MediaType.APPLICATION_JSON)
     public Response getPersonsNotices(
             @ApiParam(value = "Person's ID that you need to receive its notices")
@@ -87,17 +77,14 @@ public class PersonController {
     }
 
     @POST
-    @ApiOperation(
-            value = "Add user"
-    )
-    @ApiResponses(
-            value = {
-                    @ApiResponse(code = 200, message = "Person added"),
-                    @ApiResponse(code = 406, message = "Not acceptable input data")
-            }
-    )
+    @ApiOperation(value = "Add user")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Person added"),
+            @ApiResponse(code = 406, message = "Not acceptable input data")
+    })
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response addPerson(Person person) {
+    public Response addPerson(@ApiParam(value = "Person object that needs to be added to database", required = true)
+                                      Person person) {
         if (personService.addPerson(person)) {
             return Response.status(200).entity("Person added").build();
         } else {
@@ -106,8 +93,14 @@ public class PersonController {
     }
 
     @PUT
+    @ApiOperation(value = "Update user")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Person updated"),
+            @ApiResponse(code = 406, message = "Not acceptable input data")
+    })
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response updatePerson(Person person) {
+    public Response updatePerson(@ApiParam(value = "Person object that needs to be added to database", required = true)
+                                         Person person) {
         if (personService.updatePerson(person)) {
             return Response.status(200).entity("Person updated").build();
         } else {
@@ -116,17 +109,12 @@ public class PersonController {
     }
 
     @DELETE
-    @ApiOperation(
-            value = "Delete user by its ID",
-            notes = "You need to know user's ID to delete user. All person's " +
-                    "notices will be deleted."
-    )
-    @ApiResponses(
-            value = {
-                    @ApiResponse(code = 200, message = "Person is deleted"),
-                    @ApiResponse(code = 404, message = "Person not found")
-            }
-    )
+    @ApiOperation(value = "Delete user by its ID", notes = "You need to know user's ID to delete user. All person's " +
+            "notices will be deleted.")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Person is deleted"),
+            @ApiResponse(code = 404, message = "Person not found")
+    })
     @Path("/{id}")
     public Response deletePerson(
             @ApiParam(value = "Person's ID that you need to delete user")
