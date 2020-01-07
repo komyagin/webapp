@@ -1,24 +1,20 @@
 package io.github.komyagin.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.ProviderNotFoundException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import java.util.Properties;
 
 public class ConnectionFactory {
 
     private ConnectionFactory() {
     }
-
-    private static final String URL = "jdbc:postgresql://localhost/postgres?currentSchema=lab";
-    private static final String USER = "postgres";
-    private static final String PASSWORD = "postgres";
-
-    private static final String DRIVER_CLASS_NAME = "org.postgresql.Driver";
 
     private static final Logger logger = LoggerFactory.getLogger(ConnectionFactory.class);
 
@@ -29,6 +25,18 @@ public class ConnectionFactory {
      */
     public static Connection getConnection() {
 
+        Properties properties = new Properties();
+        try (InputStream inputStream = ConnectionFactory.class.getClassLoader().getResourceAsStream("config.properties")) {
+            properties.load(inputStream);
+        } catch (IOException e) {
+            logger.error("Properties file not found {}", e);
+        }
+
+
+        final String URL = properties.getProperty("db.url");
+        final String USER = properties.getProperty("db.user");
+        final String PASSWORD = properties.getProperty("db.password");
+        final String DRIVER_CLASS_NAME = properties.getProperty("db.driver");
 
         Connection connection = null;
         try {
