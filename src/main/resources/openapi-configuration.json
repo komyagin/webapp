@@ -8,7 +8,7 @@
   "openAPI": {
     "info": {
       "version": "1.0",
-      "title": "Swagger Pet Sample App Config File",
+      "title": "Swagger WebApp",
       "description": "This is a sample server Petstore server. ",
       "termsOfService": "http://swagger.io/terms/",
       "contact": {
