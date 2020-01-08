@@ -1,7 +1,6 @@
 package io.github.komyagin.dao;
 
 import io.github.komyagin.model.Person;
-import io.github.komyagin.service.NoticeService;
 import io.github.komyagin.service.SqlToPerson;
 import io.github.komyagin.util.ConnectionFactory;
 import org.slf4j.Logger;
@@ -94,8 +93,6 @@ public class PersonSqlRepository implements PersonRepository {
                  PreparedStatement preparedStatement = connection.prepareStatement(PERSON_DELETE_SQL)) {
                 preparedStatement.setInt(1, id);
                 preparedStatement.execute();
-                //I think it's not right...
-                (new NoticeService()).removeNoticesByPersonId(id);
                 logger.info("Person has been deleted successful");
                 return true;
             } catch (SQLException e) {
