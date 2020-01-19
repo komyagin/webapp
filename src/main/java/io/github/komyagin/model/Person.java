@@ -17,6 +17,9 @@ public class Person {
     @ApiModelProperty(notes = "The peson category. Individual or company")
     private Category category;
 
+    public Person() {
+    }
+
     public Person(int id, String firstName, String lastName, String email, Category category) {
         this.id = id;
         this.firstName = firstName;
@@ -25,6 +28,12 @@ public class Person {
         this.category = category;
     }
 
+    public Person(String firstName, String lastName, String email, Category category) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.category = category;
+    }
 
     public int getId() {
         return id;
